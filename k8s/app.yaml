@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-tracking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-tracking
+  template:
+    metadata:
+      labels:
+        app: order-tracking
+    spec:
+      containers:
+        - name: order-tracking
+          image: order-tracking:0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/orders
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-tracking
+spec:
+  selector:
+    app: order-tracking
+  ports:
+    - port: 80
+      targetPort: 8080
