@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: order-tracking
-          image: order-tracking:0.1
+          image: order-tracking:0.2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
